@@ -23,3 +23,24 @@ h1,h2,h3,h4,h5,h6,ul,li,a{
   color: #01605a !important;
 }
 
+
+
+.MuiTableContainer-root::-webkit-scrollbar {
+  width: 5px;
+}
+
+
+.MuiTableContainer-root::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+
+.MuiTableContainer-root::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 20px;
+}
+
+.MuiFormLabel-root{
+  background: #fff;
+}
+

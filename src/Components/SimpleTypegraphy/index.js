@@ -119,6 +119,15 @@ const TypographyWrapper = styled(Typography)(
     color: #171A23;
   }
 
+  &.MuiTypography-orders__count{
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 24px;
+    color: #171A23;
+    margin-bottom:20px;
+  }
+
+
 `
 );
 
