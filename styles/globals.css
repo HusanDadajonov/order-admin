@@ -1,26 +1,25 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
 
 * {
   box-sizing: border-box;
 }
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-  body {
-    color: white;
-    background: black;
-  }
+html,body{
+  margin: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+  padding: 0;
 }
+
+body{
+  background: #f6f6f6;
+  
+}
+
+h1,h2,h3,h4,h5,h6,ul,li,a{
+  margin: 0;
+  padding: 0;
+}
+
+.Mui-selected span{
+  color: #01605a !important;
+}
+
