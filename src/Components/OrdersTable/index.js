@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Tabs, { tabsClasses } from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import {styled} from '@mui/material';
+import {CircularProgress, styled} from '@mui/material';
 import { Box } from '@mui/system';
 import SimpleTypegraphy from '../../Components/SimpleTypegraphy/index';
 import {  TextField } from '@mui/material';
@@ -75,6 +75,7 @@ function OrdersTable() {
     const [value, setValue] = useState(0);
     const [orders,setOrders] = useState([])
     const route = useRouter()
+    const [loading,setLoading] = useState(false)
 
     useEffect(()=> {
         instance.get(
@@ -84,13 +85,14 @@ function OrdersTable() {
           )
           .then(function(response) {
             setOrders(response)
+            setLoading(true)
           })
           .catch(function(error) {
             console.log(error);
           });
     },[]) 
 
-    console.log();
+    console.log(loading);
 
     const TabsData = [
         {
@@ -121,96 +123,108 @@ function OrdersTable() {
             `/order/${id}`)
     }
 
-    return (
-        <Box sx={{ width: '100%' }}>
-            <Box sx={{  borderColor: 'divider' }}>
-                <Box sx={tabsWrapperStyle}>
-                    <Tabs   sx={{
-                        [`& .${tabsClasses.indicator}`]: {
-                            backgroundColor:"#01605a"
-                        },
-                    }} value={value} onChange={handleChange} aria-label="basic tabs example">
-                        {
-                            TabsData.map(item => (
-                                <Tab sx={{padding:"21px 32px"}}  key={item.id} label={<SimpleTypegraphy text={item.text} variant="span" className="tab__text" />} {...a11yProps(item.id)} />
-                            ))
-                        }
-                        
-            
-                    </Tabs>
-                    <Box
-                        component="form"
-                        noValidate
-                        autoComplete="off"
-                    >
-                        <TextField
-                            sx={{width:"300px"}}
-                            label="ID/Xaridor bo’yicha qidiring..."
-                            id="outlined-size-small"
-                            size="small"
+    if(loading){
+        return (
+            <Box sx={{ width: '100%' }}>
+                <SimpleTypegraphy text="Buyurtmalar" className="order__title" variant={"h2"}/>
+                <Box sx={{  borderColor: 'divider' }}>
+                    <Box sx={tabsWrapperStyle}>
+                        <Tabs   sx={{
+                            [`& .${tabsClasses.indicator}`]: {
+                                backgroundColor:"#01605a"
+                            },
+                        }} value={value} onChange={handleChange} aria-label="basic tabs example">
+                            {
+                                TabsData.map(item => (
+                                    <Tab sx={{padding:"21px 32px"}}  key={item.id} label={<SimpleTypegraphy text={item.text} variant="span" className="tab__text" />} {...a11yProps(item.id)} />
+                                ))
+                            }
                             
-                        />
-                    </Box>
-                </Box>
-                <TableContainer sx={{boxShadow:" 0px 4px 4px rgba(0, 0, 0, 0.03)",padding:"24px 34px"}} component={Paper}>
-                    <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-                        <TableHead>
-                            <StyledRow sx={{background:"#f6f6f6"}}>
-                                <TableCell sx={{width:"14.2%"}}><SimpleTypegraphy className="table__title" variant={"span"} text={"ID"} /></TableCell>
-                                <TableCell sx={{width:"14.2%"}} ><SimpleTypegraphy className="table__title" variant={"span"} text={"Buyurtmalar soni"} /></TableCell>
-                                <TableCell sx={{width:"14.2%"}} ><SimpleTypegraphy className="table__title" variant={"span"} text={"Xaridorning raqami"} /></TableCell>
-                                <TableCell sx={{width:"14.2%"}} ><SimpleTypegraphy className="table__title" variant={"span"} text={"Narx"} /></TableCell>
-                                <TableCell sx={{width:"14.2%"}} ><SimpleTypegraphy className="table__title" variant={"span"} text={"Xaridor"} /></TableCell>
-                                <TableCell sx={{width:"14.2%"}} ><SimpleTypegraphy className="table__title" variant={"span"} text={"Buyurtma vaqti"} /></TableCell>
-                                <TableCell sx={{width:"14.2%"}} ><SimpleTypegraphy className="table__title" variant={"span"} text={"Status"} /></TableCell>
-                            </StyledRow>
-                        </TableHead>
-                        <TableBody >
-                        {orders?.data?.data?.orders?.map((order,index) => (
-
-                            <StyledRow
-                                key={index}
-                                onClick={()=> rowHandler(order.id)}
-                            >
-                                <TableCell  component="th" scope="row">
-                                    <SimpleTypegraphy className="table__id" variant={"span"} text={`#${order.id}`} />
-                                </TableCell>
-                                <TableCell >
-                                    <SimpleTypegraphy className="order__items" variant={"span"} text={`${order.order_items.length} ta`} />
-                                </TableCell>
-                                <TableCell >{order.user.phone_number}</TableCell>
-                                <TableCell >{order.price === null ? <SimpleTypegraphy className="order__price--empty" variant={"span"} text={"KIRITILMAGAN"} /> :  <SimpleTypegraphy className="order__price" variant={"span"} text={`${Math.round(order.price)} so'm`} />  }</TableCell>
-                                <TableCell >{order.user.full_name}</TableCell>
-                                <TableCell >Naqd</TableCell>
-                                <TableCell>
-                                    {
-                                        order.status === 1 ?  <SimpleTypegraphy className="order__new" variant={"span"} text={`YANGI`} /> : null
-                                    }
-                                    {
-                                        order.status === 0 ?  <SimpleTypegraphy className="order__cancelled" variant={"span"} text={`BEKOR_QILINGAN`} /> : null
-                                    }
-                                    {
-                                        order.status === 2 ?  <SimpleTypegraphy className="order__pending" variant={"span"} text={`TO'LOVDA`} /> : null
-                                    }
-                                    {
-                                        order.status === 4 ?  <SimpleTypegraphy className="order__verify" variant={"span"} text={`TASDIQLANGAN`} /> : null
-                                    }
-                                    {
-                                        order.status === 5 ?  <SimpleTypegraphy className="order__delivered" variant={"span"} text={`YETQAZILGAN`} /> : null
-                                    }
-                                    {
-                                        order.status === 3 ?  <SimpleTypegraphy className="order__checking" variant={"span"} text={`TEKSHRILMOQDA`} /> : null
-                                    }
+                
+                        </Tabs>
+                        <Box
+                            component="form"
+                            noValidate
+                            autoComplete="off"
+                        >
+                            <TextField
+                                sx={{width:"300px"}}
+                                label="ID/Xaridor bo’yicha qidiring..."
+                                id="outlined-size-small"
+                                size="small"
                                 
-                                </TableCell>
-                            </StyledRow>
-                        ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                            />
+                        </Box>
+                    </Box>
+                    <TableContainer sx={{boxShadow:" 0px 4px 4px rgba(0, 0, 0, 0.03)",padding:"24px 34px"}} component={Paper}>
+                        <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+                            <TableHead>
+                                <StyledRow sx={{background:"#f6f6f6"}}>
+                                    <TableCell sx={{width:"14.2%"}}><SimpleTypegraphy className="table__title" variant={"span"} text={"ID"} /></TableCell>
+                                    <TableCell sx={{width:"14.2%"}} ><SimpleTypegraphy className="table__title" variant={"span"} text={"Buyurtmalar soni"} /></TableCell>
+                                    <TableCell sx={{width:"14.2%"}} ><SimpleTypegraphy className="table__title" variant={"span"} text={"Xaridorning raqami"} /></TableCell>
+                                    <TableCell sx={{width:"14.2%"}} ><SimpleTypegraphy className="table__title" variant={"span"} text={"Narx"} /></TableCell>
+                                    <TableCell sx={{width:"14.2%"}} ><SimpleTypegraphy className="table__title" variant={"span"} text={"Xaridor"} /></TableCell>
+                                    <TableCell sx={{width:"14.2%"}} ><SimpleTypegraphy className="table__title" variant={"span"} text={"Buyurtma vaqti"} /></TableCell>
+                                    <TableCell sx={{width:"14.2%"}} ><SimpleTypegraphy className="table__title" variant={"span"} text={"Status"} /></TableCell>
+                                </StyledRow>
+                            </TableHead>
+                            <TableBody >
+                            {orders?.data?.data?.orders?.map((order,index) => (
+    
+                                <StyledRow
+                                    key={index}
+                                    onClick={()=> rowHandler(order.id)}
+                                >
+                                    <TableCell  component="th" scope="row">
+                                        <SimpleTypegraphy className="table__id" variant={"span"} text={`#${order.id}`} />
+                                    </TableCell>
+                                    <TableCell >
+                                        <SimpleTypegraphy className="order__items" variant={"span"} text={`${order.order_items.length} ta`} />
+                                    </TableCell>
+                                    <TableCell >{order.user.phone_number}</TableCell>
+                                    <TableCell >{order.price === null ? <SimpleTypegraphy className="order__price--empty" variant={"span"} text={"KIRITILMAGAN"} /> :  <SimpleTypegraphy className="order__price" variant={"span"} text={`${Math.round(order.price)} so'm`} />  }</TableCell>
+                                    <TableCell >{order.user.full_name}</TableCell>
+                                    <TableCell >Naqd</TableCell>
+                                    <TableCell>
+                                        {
+                                            order.status === 1 ?  <SimpleTypegraphy className="order__new" variant={"span"} text={`YANGI`} /> : null
+                                        }
+                                        {
+                                            order.status === 0 ?  <SimpleTypegraphy className="order__cancelled" variant={"span"} text={`BEKOR_QILINGAN`} /> : null
+                                        }
+                                        {
+                                            order.status === 2 ?  <SimpleTypegraphy className="order__pending" variant={"span"} text={`TO'LOVDA`} /> : null
+                                        }
+                                        {
+                                            order.status === 4 ?  <SimpleTypegraphy className="order__verify" variant={"span"} text={`TASDIQLANGAN`} /> : null
+                                        }
+                                        {
+                                            order.status === 5 ?  <SimpleTypegraphy className="order__delivered" variant={"span"} text={`YETQAZILGAN`} /> : null
+                                        }
+                                        {
+                                            order.status === 3 ?  <SimpleTypegraphy className="order__checking" variant={"span"} text={`TEKSHRILMOQDA`} /> : null
+                                        }
+                                    
+                                    </TableCell>
+                                </StyledRow>
+                            ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Box>
             </Box>
-        </Box>
-    )
+        )
+    }
+    else{
+        return(
+            <Box sx={{ display: 'flex',alignItems:"center",justifyContent:"center",height:"93vh" }}>
+                <CircularProgress  sx={{width:"150px !important",height:"150px !important"}} />
+            </Box>
+        )
+       
+    }
+   
 }
 
 export default OrdersTable

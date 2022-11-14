@@ -24,6 +24,19 @@ const TypographyWrapper = styled(Typography)(
       text-transform: capitalize;
   }
 
+  &.MuiTypography-order__price{
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 19px;
+    display: flex;
+    align-items: center;
+    text-align: right;
+    letter-spacing: -0.02em;
+    color: #171a23;
+    text-transform: uppercase;
+  }
+
+
   &.MuiTypography-table__title{
       font-weight: 500;
       font-size: 14px;
@@ -58,6 +71,7 @@ const TypographyWrapper = styled(Typography)(
     color:#7d7d7d;
     border:1px solid #e2e2e2;
   }
+
 
   &.MuiTypography-order__cancelled{
     width: fit-content;

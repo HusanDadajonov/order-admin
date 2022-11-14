@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { instance } from '../../axios';
 import SimpleTypegraphy from '../../src/Components/SimpleTypegraphy';
-import {Button, styled} from '@mui/material';
+import {Button, CircularProgress, styled} from '@mui/material';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -73,6 +73,7 @@ function Order() {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const [cost,setCost] = useState()
+    const [loading,setLoading] = useState(false)
 
     const statuses = [
         {
@@ -116,6 +117,7 @@ function Order() {
           )
           .then(function(response) {
             setOrder(response.data.data.order)
+            setLoading(true)
           })
           .catch(function(error) {
             console.log(error);
@@ -128,6 +130,32 @@ function Order() {
         setAge(event.target.value);
         setColor(statuses[event.target.value].color)
     }
+
+    function checkPayment(bool) {
+        if(order?.payment_image_id){
+            instance.put(
+                `/orders/verification/${router.query.id}`, 
+                {
+                    is_paid: bool 
+                },
+              {  
+                
+                headers: {
+                        'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0Z2lkIjpudWxsLCJpZCI6MSwicm9sZSI6MiwiaWF0IjoxNjY4MjQwODI0fQ.GC9BeyDthf00OqLrY8ffqWuqBLhggszpdV6enyrlhdk"
+                } 
+              }
+                 
+              )
+              .then(function(response) {
+                setOrder(response.data.data.order)
+              })
+              .catch(function(error) {
+                console.log(error);
+              });
+        }
+    }
+
+ 
 
     function FormHandler(e) {
         e.preventDefault()
@@ -159,202 +187,223 @@ function Order() {
     }
 
 
-    return (
-        <Box sx={{paddingLeft:"150px",paddingTop:"40px",paddingRight:"48px"}}>
+    if(loading){
+        return (
+            <Box sx={{paddingLeft:"150px",paddingTop:"40px",paddingRight:"48px"}}>
 
-        <Modal
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-        >
-            <Box sx={style}>
-                <SimpleTypegraphy variant={"h3"} className="cost__title" text="Narx belgilash"/>
-                <Box
-                    component="form"
-                    sx={{
-                        '& .MuiTextField-root': { marginBottom:"24px", width: '100%' },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                    onSubmit={(e)=> FormHandler(e)}
-                >
-                    <TextField
-                        label="Narx"
-                        id="outlined-size-small"
-                        defaultValue=""
-                        size="small"
-                        width="100%"
-                        type={"number"}
-                        value={cost}
-                        onChange={(e)=> setCost(e.target.value)}
-                    />
-                    <Button type='submit' className='btn' sx={{width:"100%",background:"#01605a",borderRadius: "10px",marginBottom:"8px",padding:"13px 0",color:"#fff"}}>O’zgarishlarni saqlash</Button>
-                    <Button onClick={handleClose}  sx={{width:"100%",background:"rgba(23, 26, 35, 0.06);",borderRadius: "10px",padding:"13px 0",color:"#000"}}>Bekor qilish</Button>
-                </Box>
+            <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={style}>
+                    <SimpleTypegraphy variant={"h3"} className="cost__title" text="Narx belgilash"/>
+                    <Box
+                        component="form"
+                        sx={{
+                            '& .MuiTextField-root': { marginBottom:"24px", width: '100%' },
+                        }}
+                        noValidate
+                        autoComplete="off"
+                        onSubmit={(e)=> FormHandler(e)}
+                    >
+                        <TextField
+                            label="Narx"
+                            id="outlined-size-small"
+                            defaultValue=""
+                            size="small"
+                            width="100%"
+                            type={"number"}
+                            value={cost}
+                            onChange={(e)=> setCost(e.target.value)}
+                        />
+                        <Button type='submit' className='btn' sx={{width:"100%",background:"#01605a",borderRadius: "10px",marginBottom:"8px",padding:"13px 0",color:"#fff"}}>O’zgarishlarni saqlash</Button>
+                        <Button onClick={handleClose}  sx={{width:"100%",background:"rgba(23, 26, 35, 0.06);",borderRadius: "10px",padding:"13px 0",color:"#000"}}>Bekor qilish</Button>
+                    </Box>
 
-            </Box>
-        </Modal>
-            <Box sx={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"30px",marginBottom:"16px",background: "#fff",boxShadow:" 0px 2px 2px rgba(0, 0, 0, 0.04)",borderRadius: "8px"}}>
-                <Box sx={{display:"flex",alignItems: "center"}}>
-                    <SimpleTypegraphy text={"Buyurtma"} variant={"h2"} className="user__name"/>
-                    <SimpleTypegraphy text={`#${order?.id}`} variant={"p"} className="user__id"/>
                 </Box>
-                <Box sx={{display:"flex",alignItems:"center"}}>
-                    <FormControl sx={{width:"240px"}} size="small">
-                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={age}
-                            label="Age"
-                            onChange={handleChange}
-                            sx={{color:color}}
-                        >
-                            {
-                                statuses.map(item => (
-                                    <MenuItem key={item.id}   value={item.id}>{item.text}</MenuItem>
-                                ))
-                            }
-               
-                        </Select>
-                    </FormControl>
-                </Box>
-               
-            </Box>
-            <Box sx={{display:"flex"}}>
-                <Box sx={{width:"25%",marginRight:"16px",padding:"20px",marginBottom:"16px",background: "#fff",boxShadow:" 0px 2px 2px rgba(0, 0, 0, 0.04)",borderRadius: "8px"}}>
-                    <Box>
-                        <SimpleTypegraphy text={`phone number`} variant={"p"} className="user__sub--title"/>
-                        <SimpleTypegraphy text={order?.user?.phone_number} variant={"h2"} className="user__title"/>
+            </Modal>
+                <Box sx={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"30px",marginBottom:"16px",background: "#fff",boxShadow:" 0px 2px 2px rgba(0, 0, 0, 0.04)",borderRadius: "8px"}}>
+                    <Box sx={{display:"flex",alignItems: "center"}}>
+                        <SimpleTypegraphy text={"Buyurtma"} variant={"h2"} className="user__name"/>
+                        <SimpleTypegraphy text={`#${order?.id}`} variant={"p"} className="user__id"/>
                     </Box>
-                </Box>
-                <Box sx={{width:"25%",marginRight:"16px",padding:"20px",marginBottom:"16px",background: "#fff",boxShadow:" 0px 2px 2px rgba(0, 0, 0, 0.04)",borderRadius: "8px"}}>
-                    <Box>
-                        <SimpleTypegraphy text={`Ism va Familiya`} variant={"p"} className="user__sub--title"/>
-                        <SimpleTypegraphy text={order?.user?.full_name} variant={"h2"} className="user__title"/>
-                    </Box>
-                </Box>
-                <Box sx={{width:"25%",marginRight:"16px",padding:"20px",marginBottom:"16px",background: "#fff",boxShadow:" 0px 2px 2px rgba(0, 0, 0, 0.04)",borderRadius: "8px"}}>
-                    <Box>
-                        <SimpleTypegraphy text={`Status`} variant={"p"} className="user__sub--title"/>
-                        
-                        {
-                            order?.status === 1 ?  <SimpleTypegraphy className="order__new" variant={"span"} text={`YANGI`} /> : null
-                        }
-                        {
-                            order?.status === 0 ?  <SimpleTypegraphy className="order__cancelled" variant={"span"} text={`BEKOR_QILINGAN`} /> : null
-                        }
-                        {
-                            order?.status === 2 ?  <SimpleTypegraphy className="order__pending" variant={"span"} text={`TO'LOVDA`} /> : null
-                        }
-                        {
-                            order?.status === 4 ?  <SimpleTypegraphy className="order__verify" variant={"span"} text={`TASDIQLANGAN`} /> : null
-                        }
-                        {
-                            order?.status === 5 ?  <SimpleTypegraphy className="order__delivered" variant={"span"} text={`YETQAZILGAN`} /> : null
-                        }
-                        {
-                            order?.status === 3 ?  <SimpleTypegraphy className="order__checking" variant={"span"} text={`TEKSHRILMOQDA`} /> : null
-                        }
-                                
-                    </Box>
-                </Box>
-                <Box sx={{width:"25%",padding:"20px",marginBottom:"16px",background: "#fff",boxShadow:" 0px 2px 2px rgba(0, 0, 0, 0.04)",borderRadius: "8px"}}>
-                    <Box>
-                        <SimpleTypegraphy text={`Buyurmalar soni`} variant={"p"} className="user__sub--title"/>
-                        <SimpleTypegraphy className="order__items" variant={"span"} text={`${order?.order_items.length} ta`} />
-                    </Box>
-                </Box>
-            </Box>
-            <Box sx={{display:"flex"}}>
-            <Box sx={{width:"78%",height:"450px",marginRight:"16px",padding:"24px",marginBottom:"16px",background: "#fff",boxShadow:" 0px 2px 2px rgba(0, 0, 0, 0.04)",borderRadius: "8px"}}>
-                <Box sx={{display:"flex",justifyContent:"space-between"}}>
-                    <SimpleTypegraphy variant={"h3"} className="orders__count" text={`Mahsulotlar (${order?.order_items.length})`}/>
-                    <Box onClick={handleOpen} sx={{cursor:"pointer"}}>
-                        <EditIcon sx={{color:"#731694"}}/>
-                    </Box>
-                </Box>
-             
-                <TableContainer sx={{background:"transparent",boxShadow: "none !important",height:"90%",overflow:"hi"}} component={Paper}>
-                    <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-                        <TableHead>
-                            <StyledRow sx={{background:"#f6f6f6"}}>
-                                <TableCell sx={{width:"14.2%"}}>
-                                    <SimpleTypegraphy className="table__title" variant={"span"} text={"№"} />
-                                </TableCell>
-                                <TableCell sx={{width:"14.2%"}} >
-                                    <SimpleTypegraphy className="table__title" variant={"span"} text={"Mahsulot"} />
-                                </TableCell>
-                                <TableCell sx={{width:"14.2%"}} >
-                                    <SimpleTypegraphy className="table__title" variant={"span"} text={"Qo'shilgan"} />
-                                </TableCell>
-                                <TableCell sx={{width:"14.2%"}} >
-                                    <SimpleTypegraphy className="table__title" variant={"span"} text={"Hajm"} />
-                                </TableCell>
-                                <TableCell sx={{width:"14.2%"}} >
-                                    <SimpleTypegraphy className="table__title" variant={"span"} text={"Miqdor"} />
-                                </TableCell>
-                            </StyledRow>
-                        </TableHead>
-                        <TableBody >
-                        {order?.order_items?.map((item,index) => (
-
-                            <StyledRow
-                                key={index}
+                    <Box sx={{display:"flex",alignItems:"center"}}>
+                        <FormControl sx={{width:"240px"}} size="small">
+                            <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={age}
+                                label="Age"
+                                onChange={handleChange}
+                                sx={{color:color}}
                             >
-                                <TableCell  component="th" scope="row">
-                                    <SimpleTypegraphy className="table__id" variant={"span"} text={`#${index + 1}`} />
-                                </TableCell>
                                 {
-                                    item.link !== null ?  
-                                     <TableCell ><Link target="_blank" href={item.link ? item.link : "#"} legacyBehavior><a style={{color:"#4e4efd"}}>Link</a></Link></TableCell> 
-                                       
-                                    :
-                                    <TableCell >
-                                        <Image alt="order-img" style={{objectFit:"cover"}} src={"/img/default-img.png"} width={40} height={40}/>
-                                    </TableCell>
-                                    
+                                    statuses.map(item => (
+                                        <MenuItem key={item.id}   value={item.id}>{item.text}</MenuItem>
+                                    ))
                                 }
-                              
-                                
-                                <TableCell >{item?.created_at.slice(0,10)}</TableCell>
-                                <TableCell >{item?.size}</TableCell>
-                                <TableCell >{item?.amount}</TableCell>
-                            </StyledRow>
-                        ))}
-                        
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                
+                            </Select>
+                        </FormControl>
+                    </Box>
+                
                 </Box>
+                <Box sx={{display:"flex"}}>
+                    <Box sx={{width:"25%",marginRight:"16px",padding:"20px",marginBottom:"16px",background: "#fff",boxShadow:" 0px 2px 2px rgba(0, 0, 0, 0.04)",borderRadius: "8px"}}>
+                        <Box>
+                            <SimpleTypegraphy text={`phone number`} variant={"p"} className="user__sub--title"/>
+                            <SimpleTypegraphy text={order?.user?.phone_number} variant={"h2"} className="user__title"/>
+                        </Box>
+                    </Box>
+                    <Box sx={{width:"25%",marginRight:"16px",padding:"20px",marginBottom:"16px",background: "#fff",boxShadow:" 0px 2px 2px rgba(0, 0, 0, 0.04)",borderRadius: "8px"}}>
+                        <Box>
+                            <SimpleTypegraphy text={`Ism va Familiya`} variant={"p"} className="user__sub--title"/>
+                            <SimpleTypegraphy text={order?.user?.full_name} variant={"h2"} className="user__title"/>
+                        </Box>
+                    </Box>
+                    <Box sx={{width:"25%",marginRight:"16px",padding:"20px",marginBottom:"16px",background: "#fff",boxShadow:" 0px 2px 2px rgba(0, 0, 0, 0.04)",borderRadius: "8px"}}>
+                        <Box>
+                            <SimpleTypegraphy text={`Status`} variant={"p"} className="user__sub--title"/>
+                            
+                            {
+                                order?.status === 1 ?  <SimpleTypegraphy className="order__new" variant={"span"} text={`YANGI`} /> : null
+                            }
+                            {
+                                order?.status === 0 ?  <SimpleTypegraphy className="order__cancelled" variant={"span"} text={`BEKOR_QILINGAN`} /> : null
+                            }
+                            {
+                                order?.status === 2 ?  <SimpleTypegraphy className="order__pending" variant={"span"} text={`TO'LOVDA`} /> : null
+                            }
+                            {
+                                order?.status === 4 ?  <SimpleTypegraphy className="order__verify" variant={"span"} text={`TASDIQLANGAN`} /> : null
+                            }
+                            {
+                                order?.status === 5 ?  <SimpleTypegraphy className="order__delivered" variant={"span"} text={`YETQAZILGAN`} /> : null
+                            }
+                            {
+                                order?.status === 3 ?  <SimpleTypegraphy className="order__checking" variant={"span"} text={`TEKSHRILMOQDA`} /> : null
+                            }
+                                    
+                        </Box>
+                    </Box>
                     <Box sx={{width:"25%",padding:"20px",marginBottom:"16px",background: "#fff",boxShadow:" 0px 2px 2px rgba(0, 0, 0, 0.04)",borderRadius: "8px"}}>
-                      <Box sx={{display:"flex",alignItems:"center"}}>
-                        <SimpleTypography className="orders__check" variant="h3" text="Chek"/>
-                        {
-                             order?.status === 4 ? <SimpleTypography className="order__new" variant="span" text="TO'LANGAN"/> : null
-                        }
-
-                        {
-                             order?.status === 2 ? <SimpleTypography className="order__pending" variant="span" text="KUTILMOQDA"/> : null
-                        }
-
-                        {
-                             order?.status === 3 ? <SimpleTypography className="order__pending" variant="span" text="TEKSHIRILMOQDA"/> : null
-                        }
-
-                        
-                        
-                      </Box>
-                        {
-                            order?.payment_image_id ? <Image src={order?.payment_image_id} width={279} style={{objectFit:"cover"}} height={300}/>
-                            : <Image src={"/img/no-image.png"} width={279} style={{objectFit:"cover"}} height={300}/>
-                        }
-                      
+                        <Box>
+                            <SimpleTypegraphy text={`Buyurmalar soni`} variant={"p"} className="user__sub--title"/>
+                            <SimpleTypegraphy className="order__items" variant={"span"} text={`${order?.order_items.length} ta`} />
+                        </Box>
                     </Box>
                 </Box>
+                <Box sx={{display:"flex"}}>
+                <Box sx={{width:"78%",height:"480px",marginRight:"16px",padding:"24px",marginBottom:"16px",background: "#fff",boxShadow:" 0px 2px 2px rgba(0, 0, 0, 0.04)",borderRadius: "8px"}}>
+                    <Box sx={{display:"flex",justifyContent:"space-between"}}>
+                        <SimpleTypegraphy variant={"h3"} className="orders__count" text={`Mahsulotlar (${order?.order_items.length})`}/>
+                        <Box onClick={handleOpen} sx={{cursor:"pointer"}}>
+                            <EditIcon sx={{color:"#731694"}}/>
+                        </Box>
+                    </Box>
+                
+                    <TableContainer sx={{background:"transparent",boxShadow: "none !important",height:"90%",overflow:"hi"}} component={Paper}>
+                        <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+                            <TableHead>
+                                <StyledRow sx={{background:"#f6f6f6"}}>
+                                    <TableCell sx={{width:"14.2%"}}>
+                                        <SimpleTypegraphy className="table__title" variant={"span"} text={"№"} />
+                                    </TableCell>
+                                    <TableCell sx={{width:"14.2%"}} >
+                                        <SimpleTypegraphy className="table__title" variant={"span"} text={"Mahsulot"} />
+                                    </TableCell>
+                                    <TableCell sx={{width:"14.2%"}} >
+                                        <SimpleTypegraphy className="table__title" variant={"span"} text={"Qo'shilgan"} />
+                                    </TableCell>
+                                    <TableCell sx={{width:"14.2%"}} >
+                                        <SimpleTypegraphy className="table__title" variant={"span"} text={"Hajm"} />
+                                    </TableCell>
+                                    <TableCell sx={{width:"14.2%"}} >
+                                        <SimpleTypegraphy className="table__title" variant={"span"} text={"Miqdor"} />
+                                    </TableCell>
+                                </StyledRow>
+                            </TableHead>
+                            <TableBody >
+                            {order?.order_items?.map((item,index) => (
+
+                                <StyledRow
+                                    key={index}
+                                >
+                                    <TableCell  component="th" scope="row">
+                                        <SimpleTypegraphy className="table__id" variant={"span"} text={`#${index + 1}`} />
+                                    </TableCell>
+                                    {
+                                        item.link !== null ?  
+                                        <TableCell ><Link target="_blank" href={item.link ? item.link : "#"} legacyBehavior><a style={{color:"#4e4efd"}}>Link</a></Link></TableCell> 
+                                        
+                                        :
+                                        <TableCell >
+                                            <Image alt="order-img" style={{objectFit:"cover"}} src={`http://137.184.3.22:3000/uploads/files/${item?.image_id}`} width={40} height={40}/>
+                                        </TableCell>
+                                        
+                                    }
+                                
+                                    
+                                    <TableCell >{item?.created_at.slice(0,10)}</TableCell>
+                                    <TableCell >{item?.size}</TableCell>
+                                    <TableCell >{item?.amount}</TableCell>
+                                </StyledRow>
+                            ))}
+                            
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    </Box>
+                        <Box sx={{width:"25%",padding:"20px",marginBottom:"16px",background: "#fff",boxShadow:" 0px 2px 2px rgba(0, 0, 0, 0.04)",borderRadius: "8px"}}>
+                        <Box sx={{display:"flex",alignItems:"center",marginBottom:"16px"}}>
+                            <SimpleTypography className="orders__check" variant="h3" text="Chek"/>
+                            {
+                                order?.status === 4 ? <SimpleTypography className="order__new" variant="span" text="TO'LANGAN"/> : null
+                            }
+
+                            {
+                                order?.status === 2 ? <SimpleTypography className="order__pending" variant="span" text="KUTILMOQDA"/> : null
+                            }
+
+                            {
+                                order?.status === 3 ? <SimpleTypography className="order__pending" variant="span" text="TEKSHIRILMOQDA"/> : null
+                            }
+
+                            
+                            
+                        </Box>
+                            {
+                                order?.payment_image_id ? <Image alt='payment' src={`http://137.184.3.22:3000/uploads/files/${order?.payment_image_id}`} width={279} style={{objectFit:"cover"}} height={260}/>
+                                : <Image src={"/img/no-image.png"} width={279} style={{objectFit:"cover"}} height={300} alt="default-img"/>
+                            }
+                        
+                        <Box sx={{borderBottom:"1px solid #ccc",borderTop:"1px solid #ccc",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"17px 0",marginBottom:"25px"}}>
+                            <SimpleTypography variant="p" text={"Umumiy chek"} />
+                            <SimpleTypography variant="p"  className="order__price" text={`${order?.price ? Math.round(order?.price) + " so'm" : "KIRITILMAGAN"}`} />
+                        </Box>
+                        {
+                                order?.payment_image_id ?
+                                <Box sx={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+                                    <Button onClick={()=> checkPayment(true)} className='btn' sx={{width:"90%",marginRight:"10px",background:"#01605a",borderRadius: "10px",padding:"13px 0",color:"#fff"}}>Tasdiqlash</Button>
+                                    <Button onClick={()=> checkPayment(false)} className='btn-error' sx={{width:"90%",background:"rgba(238, 36, 90, 0.12)",borderRadius: "10px",padding:"13px 0",color:"#dd144a"}}>Xatolik</Button>
+                                </Box> : null
+                        }
+                    
+                        </Box>
+                    </Box>
+            </Box>
+        )
+    }
+    else{
+      return(
+        <Box sx={{ display: 'flex',alignItems:"center",justifyContent:"center",height:"93vh" }}>
+            <CircularProgress  sx={{width:"150px !important",height:"150px !important"}} />
         </Box>
-    )
+      )
+    }
 }
 
 export default Order

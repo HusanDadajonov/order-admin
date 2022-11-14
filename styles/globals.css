@@ -48,3 +48,7 @@ h1,h2,h3,h4,h5,h6,ul,li,a{
   background: #0e8a82;
 }
 
+.btn-error:hover{
+  background: rgba(241, 159, 181, 0.12);
+}
+
