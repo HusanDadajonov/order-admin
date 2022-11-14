@@ -119,6 +119,15 @@ const TypographyWrapper = styled(Typography)(
     color: #171A23;
   }
 
+  &.MuiTypography-cost__title{
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 27px;
+    letter-spacing: -0.02em;
+    color: #171a23;
+    margin-bottom:24px
+  }
+
   &.MuiTypography-orders__count{
     font-weight: 600;
     font-size: 20px;
@@ -126,6 +135,60 @@ const TypographyWrapper = styled(Typography)(
     color: #171A23;
     margin-bottom:20px;
   }
+
+  &.MuiTypography-orders__check{
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 24px;
+    color: #171A23;
+    margin-right:8px;
+  }
+
+  &.MuiTypography-order__verify{
+    width: fit-content;
+    display:flex;
+    background: rgba(80, 165, 71, 0.12);
+    padding:5px;
+    border-radius:5px;
+    align-items: center;
+    justify-content: center;
+    color: #50A547;
+  }
+
+  &.MuiTypography-order__pending{
+    width: fit-content;
+    display:flex;
+    background: rgba(241, 176, 48, 0.12);
+    padding:5px;
+    border-radius:5px;
+    align-items: center;
+    justify-content: center;
+    color: #F1B030;
+  } 
+
+  
+  &.MuiTypography-order__checking{
+    width: fit-content;
+    display:flex;
+    background: rgba(241, 176, 48, 0.12);
+    padding:5px;
+    border-radius:5px;
+    align-items: center;
+    justify-content: center;
+    color: #F1B030;
+ 
+    
+  &.MuiTypography-order__delivered{
+    width: fit-content;
+    display:flex;
+    background: rgba(80, 165, 71, 0.12);
+    padding:5px;
+    border-radius:5px;
+    align-items: center;
+    justify-content: center;
+    color: #50A547;
+  }
+
 
 
 `

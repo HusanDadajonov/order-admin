@@ -80,7 +80,8 @@ function Users() {
 
     useEffect(()=> {
         instance.get(
-            `users`,{headers: {
+            `users`,{
+                headers: {
                 'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0Z2lkIjpudWxsLCJpZCI6MSwicm9sZSI6MiwiaWF0IjoxNjY4MjUyNTU1fQ.KOXs06thZAisjqPr1ICoJTHNQL4WzXgD2M59V-LJ3JI"
               }}
           )

@@ -75,17 +75,6 @@ function OrdersTable() {
     const [value, setValue] = useState(0);
     const [orders,setOrders] = useState([])
     const route = useRouter()
-   
-    useEffect(()=> {
-        instance.post(
-            `/users/login`,{tgid: 123, password: "admin"}
-          )
-          .then(function(response) {
-          })
-          .catch(function(error) {
-            console.log(error);
-          });
-    },[]) 
 
     useEffect(()=> {
         instance.get(
@@ -190,7 +179,7 @@ function OrdersTable() {
                                     <SimpleTypegraphy className="order__items" variant={"span"} text={`${order.order_items.length} ta`} />
                                 </TableCell>
                                 <TableCell >{order.user.phone_number}</TableCell>
-                                <TableCell >{order.price === null ? <SimpleTypegraphy className="order__price--empty" variant={"span"} text={"KIRITILMAGAN"} /> : null}</TableCell>
+                                <TableCell >{order.price === null ? <SimpleTypegraphy className="order__price--empty" variant={"span"} text={"KIRITILMAGAN"} /> :  <SimpleTypegraphy className="order__price" variant={"span"} text={`${Math.round(order.price)} so'm`} />  }</TableCell>
                                 <TableCell >{order.user.full_name}</TableCell>
                                 <TableCell >Naqd</TableCell>
                                 <TableCell>

@@ -44,3 +44,7 @@ h1,h2,h3,h4,h5,h6,ul,li,a{
   background: #fff;
 }
 
+.btn:hover{
+  background: #0e8a82;
+}
+
