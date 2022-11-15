@@ -79,7 +79,6 @@ function Order() {
 
     useEffect(()=> {
        if(router.isReady){
-        setLoading(false)
         instance.get(
             `orders/${router.query.id}`,{headers: {
                 'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0Z2lkIjpudWxsLCJpZCI6MSwicm9sZSI6MiwiaWF0IjoxNjY4MjUyNTU1fQ.KOXs06thZAisjqPr1ICoJTHNQL4WzXgD2M59V-LJ3JI"
@@ -93,6 +92,8 @@ function Order() {
             console.log(error);
           });
        }
+
+       setRefresh(false);
     },[router.query.id, refresh])
 
 
@@ -103,6 +104,7 @@ function Order() {
 
 
     function DeliveredHandler() {
+        setRefresh(true)
         instance.put(
             `/orders/status/${router.query.id}`, 
             {
@@ -140,14 +142,26 @@ function Order() {
                  
               )
               .then(function(response) {
-                setOrder(response.data.data.order)
               })
               .catch(function(error) {
                 console.log(error);
               });
         }
 
-        setPaymentBtns(false)
+        // if(router.isReady){
+        //     instance.get(
+        //         `orders/${router.query.id}`,{headers: {
+        //             'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0Z2lkIjpudWxsLCJpZCI6MSwicm9sZSI6MiwiaWF0IjoxNjY4MjUyNTU1fQ.KOXs06thZAisjqPr1ICoJTHNQL4WzXgD2M59V-LJ3JI"
+        //           }}
+        //       )
+        //       .then(function(response) {
+        //         setOrder(response.data.data.order)
+        //         setLoading(true)
+        //       })
+        //       .catch(function(error) {
+        //         console.log(error);
+        //       });
+        //    }
     }
 
  
@@ -170,7 +184,6 @@ function Order() {
                  
               )
               .then(function(response) {
-                setOrder(response.data.data.order)
               })
               .catch(function(error) {
                 console.log(error);
@@ -359,10 +372,15 @@ function Order() {
                             {
                                 order?.transactions.map(item => (
                                     order?.payment_image_id ?
-                                    <Box sx={{position:"relative"}}>
+                                    <Box sx={{position:"relative"}} key={item.id}>
                                         {
-                                            item.valid ?  <SimpleTypography variant="span" className="accepted__img" text="Muvaffaqiyatli" /> : <SimpleTypography variant="span" className="unaccepted__img" text="Muammoli" />
+                                            item.valid ?  <SimpleTypography variant="span" className="accepted__img" text="Muvaffaqiyatli" /> : null
                                         }
+                                        {
+                                            item.valid === false ?   <SimpleTypography variant="span" className="unaccepted__img" text="Muammoli" /> : null
+                                        }
+                                            
+                                           
                                         
                                         <Image alt='payment' src={`http://137.184.3.22:3000/uploads/files/${item?.image_id}`} width={279} style={{objectFit:"cover"}} height={260}/>
                                     </Box>
@@ -372,10 +390,10 @@ function Order() {
                                 
                             }
 
-{
+                            {
                                 order?.transactions.map(item => (
                                     item.valid === null ?( 
-                                    <Box sx={{display:"flex",margin:"24px 0",alignItems:"center",justifyContent:"space-between"}}>
+                                    <Box key={item.id} sx={{display:"flex",margin:"24px 0",alignItems:"center",justifyContent:"space-between"}}>
                                         <Button onClick={()=> {checkPayment(true); setRefresh(!refresh)}}  sx={{"&:hover":{background:"#b9d6f2"},width:"90%",marginRight:"10px",background:"#a2D2ff",borderRadius: "10px",padding:"13px 0",color:"#0053A0"}}>Tasdiqlash</Button>
                                         <Button onClick={()=> {checkPayment(false); setRefresh(!refresh)}} sx={{"&:hover":{background:"rgb(243 131 161 / 12%)"},width:"90%",background:"rgba(238, 36, 90, 0.12)",borderRadius: "10px",padding:"13px 0",color:"#dd144a"}}>Xatolik</Button>
                                     </Box> ) : null
