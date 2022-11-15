@@ -197,7 +197,7 @@ function OrdersTable() {
                                             order.status === 2 ?  <SimpleTypegraphy className="order__pending" variant={"span"} text={`TO'LOVDA`} /> : null
                                         }
                                         {
-                                            order.status === 4 ?  <SimpleTypegraphy className="order__verify" variant={"span"} text={`TASDIQLANGAN`} /> : null
+                                            order.status === 4 ?  <SimpleTypegraphy className="order__verify" variant={"span"} text={`YO'LDA (TO'LANDI)`} /> : null
                                         }
                                         {
                                             order.status === 5 ?  <SimpleTypegraphy className="order__delivered" variant={"span"} text={`YETQAZILGAN`} /> : null

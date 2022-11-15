@@ -14,7 +14,7 @@ const SideBarBox = styled(Box)(
         padding:18px;
         background: #fff;
         box-shadow: 0px 4px 6px rgba(214, 214, 214, 0.8);
-        position:absolute;
+        position:fixed;
         display:flex;
         flex-direction: column;
         justify-content: space-between;
@@ -69,29 +69,32 @@ function SideBar() {
                
             </Box>
             <Box>
-                <Box 
-                    sx={siderBarItemStyle}
-                    className={active === 1 ? "active" : ""}
-                    onClick={()=> setActive(1)}
-                >
-                    <Link href="/" legacyBehavior>
+                <Link href="/" legacyBehavior>
                         <a >
-                            <FilterFramesOutlinedIcon style={{fontSize:"40px",color:"#171A23"}}/>
+                            <Box 
+                                sx={siderBarItemStyle}
+                                className={active === 1 ? "active" : ""}
+                                onClick={()=> setActive(1)}
+                            >
+                                <FilterFramesOutlinedIcon style={{fontSize:"40px",color:"#171A23"}}/>
+                            </Box>
                         </a>
-                    </Link>
-                </Box>
-                <Box 
-                    sx={siderBarItemStyle}
-                    className={active === 2 ? "active" : ""}
-                    onClick={()=> setActive(2)}
-                >   
+                </Link>
+
                 <Link href="/users" legacyBehavior>
                     <a >
-                        <GroupsIcon style={{fontSize:"40px",color:"#171A23"}}/>
+
+                        <Box 
+                            sx={siderBarItemStyle}
+                            className={active === 2 ? "active" : ""}
+                            onClick={()=> setActive(2)}
+                        >   
+                            <GroupsIcon style={{fontSize:"40px",color:"#171A23"}}/>
+                        </Box>
+                        
                     </a>
                 </Link>
-                    
-                </Box>
+              
                
             </Box>
             <Box sx={{width:"40px",height:"40px",borderRadius:"50%",overflow:"hidden"}}>

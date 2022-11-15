@@ -74,42 +74,12 @@ function Order() {
     const handleClose = () => setOpen(false);
     const [cost,setCost] = useState()
     const [loading,setLoading] = useState(false)
-
-    const statuses = [
-        {
-            id:0,
-            text:"BEKOR_QILINGAN",
-            color:"#dd144A"
-        },
-        {
-            id:1,
-            text:"YANGI",
-            color:"#84ff9c"
-        },
-        {
-            id:2,
-            text:"TO'LOVDA",
-            color: "#f7e65c",
-        },
-        {
-            id:3,
-            text:"TEKSHRILMOQDA",
-            color: "#f7e65c",
-        },
-        {
-            id:4,
-            text:"TASDIQLANGAN",
-            color:"#84ff9c"
-        },
-        {
-            id:5,
-            text:"YETQAZILGAN",
-            color:"#84ff9c"
-        },
-    ]
+    const [paymentBtns,setPaymentBtns] = useState(true)
+    const [refresh, setRefresh] = useState(false);
 
     useEffect(()=> {
        if(router.isReady){
+        setLoading(false)
         instance.get(
             `orders/${router.query.id}`,{headers: {
                 'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0Z2lkIjpudWxsLCJpZCI6MSwicm9sZSI6MiwiaWF0IjoxNjY4MjUyNTU1fQ.KOXs06thZAisjqPr1ICoJTHNQL4WzXgD2M59V-LJ3JI"
@@ -123,12 +93,35 @@ function Order() {
             console.log(error);
           });
        }
-    },[router.query.id])
+    },[router.query.id, refresh])
 
 
     const handleChange = (event) => {
         setAge(event.target.value);
         setColor(statuses[event.target.value].color)
+    }
+
+
+    function DeliveredHandler() {
+        instance.put(
+            `/orders/status/${router.query.id}`, 
+            {
+                status: 5 
+            },
+          {  
+            
+            headers: {
+                    'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0Z2lkIjpudWxsLCJpZCI6MSwicm9sZSI6MiwiaWF0IjoxNjY4MjQwODI0fQ.GC9BeyDthf00OqLrY8ffqWuqBLhggszpdV6enyrlhdk"
+            } 
+          }
+             
+          )
+          .then(function(response) {
+            setLoading(true)
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
     }
 
     function checkPayment(bool) {
@@ -153,6 +146,8 @@ function Order() {
                 console.log(error);
               });
         }
+
+        setPaymentBtns(false)
     }
 
  
@@ -230,24 +225,9 @@ function Order() {
                         <SimpleTypegraphy text={`#${order?.id}`} variant={"p"} className="user__id"/>
                     </Box>
                     <Box sx={{display:"flex",alignItems:"center"}}>
-                        <FormControl sx={{width:"240px"}} size="small">
-                            <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                            <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                value={age}
-                                label="Age"
-                                onChange={handleChange}
-                                sx={{color:color}}
-                            >
-                                {
-                                    statuses.map(item => (
-                                        <MenuItem key={item.id}   value={item.id}>{item.text}</MenuItem>
-                                    ))
-                                }
-                
-                            </Select>
-                        </FormControl>
+                        {
+                            order.status === 4 ? <Button onClick={DeliveredHandler} sx={{"&:hover":{background:"#b9d6f2"},marginRight:"10px",background:"#a2D2ff",borderRadius: "5px",padding:"10px",color:"#0053A0"}}>YETQAZILDI</Button> : ""
+                        }
                     </Box>
                 
                 </Box>
@@ -278,7 +258,7 @@ function Order() {
                                 order?.status === 2 ?  <SimpleTypegraphy className="order__pending" variant={"span"} text={`TO'LOVDA`} /> : null
                             }
                             {
-                                order?.status === 4 ?  <SimpleTypegraphy className="order__verify" variant={"span"} text={`TASDIQLANGAN`} /> : null
+                                order?.status === 4 ?  <SimpleTypegraphy className="order__verify" variant={"span"} text={`YO'LDA (TO'LANDI)`} /> : null
                             }
                             {
                                 order?.status === 5 ?  <SimpleTypegraphy className="order__delivered" variant={"span"} text={`YETQAZILGAN`} /> : null
@@ -365,33 +345,55 @@ function Order() {
                             }
 
                             {
-                                order?.status === 2 ? <SimpleTypography className="order__pending" variant="span" text="KUTILMOQDA"/> : null
+                                order?.status === 2 ? <SimpleTypography className="order__checking" variant="span" text="KUTILMOQDA"/> : null
                             }
 
                             {
-                                order?.status === 3 ? <SimpleTypography className="order__pending" variant="span" text="TEKSHIRILMOQDA"/> : null
+                                order?.status === 3 ? <SimpleTypography className="order__checking" variant="span" text="TEKSHIRILMOQDA"/> : null
                             }
 
                             
                             
                         </Box>
+                        <Box sx={{display:"flex",flexDirection:"column"}}>
                             {
-                                order?.payment_image_id ? <Image alt='payment' src={`http://137.184.3.22:3000/uploads/files/${order?.payment_image_id}`} width={279} style={{objectFit:"cover"}} height={260}/>
+                                order?.transactions.map(item => (
+                                    order?.payment_image_id ?
+                                    <Box sx={{position:"relative"}}>
+                                        {
+                                            item.valid ?  <SimpleTypography variant="span" className="accepted__img" text="Muvaffaqiyatli" /> : <SimpleTypography variant="span" className="unaccepted__img" text="Muammoli" />
+                                        }
+                                        
+                                        <Image alt='payment' src={`http://137.184.3.22:3000/uploads/files/${item?.image_id}`} width={279} style={{objectFit:"cover"}} height={260}/>
+                                    </Box>
                                 : <Image src={"/img/no-image.png"} width={279} style={{objectFit:"cover"}} height={300} alt="default-img"/>
+                                    
+                                ))
+                                
                             }
+
+{
+                                order?.transactions.map(item => (
+                                    item.valid === null ?( 
+                                    <Box sx={{display:"flex",margin:"24px 0",alignItems:"center",justifyContent:"space-between"}}>
+                                        <Button onClick={()=> {checkPayment(true); setRefresh(!refresh)}}  sx={{"&:hover":{background:"#b9d6f2"},width:"90%",marginRight:"10px",background:"#a2D2ff",borderRadius: "10px",padding:"13px 0",color:"#0053A0"}}>Tasdiqlash</Button>
+                                        <Button onClick={()=> {checkPayment(false); setRefresh(!refresh)}} sx={{"&:hover":{background:"rgb(243 131 161 / 12%)"},width:"90%",background:"rgba(238, 36, 90, 0.12)",borderRadius: "10px",padding:"13px 0",color:"#dd144a"}}>Xatolik</Button>
+                                    </Box> ) : null
+                                ))
+                                
+                                
+                            }
+
+                          
+                    
+                        </Box>
+                         
                         
-                        <Box sx={{borderBottom:"1px solid #ccc",borderTop:"1px solid #ccc",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"17px 0",marginBottom:"25px"}}>
+                        <Box sx={{borderBottom:"1px solid #ccc",borderTop:"1px solid #ccc",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"17px 0"}}>
                             <SimpleTypography variant="p" text={"Umumiy chek"} />
                             <SimpleTypography variant="p"  className="order__price" text={`${order?.price ? Math.round(order?.price) + " so'm" : "KIRITILMAGAN"}`} />
                         </Box>
-                        {
-                                order?.payment_image_id ?
-                                <Box sx={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-                                    <Button onClick={()=> checkPayment(true)} className='btn' sx={{width:"90%",marginRight:"10px",background:"#01605a",borderRadius: "10px",padding:"13px 0",color:"#fff"}}>Tasdiqlash</Button>
-                                    <Button onClick={()=> checkPayment(false)} className='btn-error' sx={{width:"90%",background:"rgba(238, 36, 90, 0.12)",borderRadius: "10px",padding:"13px 0",color:"#dd144a"}}>Xatolik</Button>
-                                </Box> : null
-                        }
-                    
+                      
                         </Box>
                     </Box>
             </Box>

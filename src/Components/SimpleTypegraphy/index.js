@@ -142,6 +142,17 @@ const TypographyWrapper = styled(Typography)(
     margin-bottom:24px
   }
 
+  &.MuiTypography-order__delivered{
+    width: fit-content;
+    display:flex;
+    background: rgba(80, 165, 71, 0.12);
+    padding:5px;
+    border-radius:5px;
+    align-items: center;
+    justify-content: center;
+    color: #50A547;
+  }
+
   &.MuiTypography-orders__count{
     font-weight: 600;
     font-size: 20px;
@@ -161,23 +172,23 @@ const TypographyWrapper = styled(Typography)(
   &.MuiTypography-order__verify{
     width: fit-content;
     display:flex;
-    background: rgba(80, 165, 71, 0.12);
+    background: rgba(231, 156, 48, 0.1);
     padding:5px;
     border-radius:5px;
     align-items: center;
     justify-content: center;
-    color: #50A547;
+    color: #f1d030;
   }
 
   &.MuiTypography-order__pending{
     width: fit-content;
     display:flex;
-    background: rgba(241, 176, 48, 0.12);
+    background: #A2D2FF;
     padding:5px;
     border-radius:5px;
     align-items: center;
     justify-content: center;
-    color: #F1B030;
+    color: #0053A0;
   } 
 
   
@@ -190,19 +201,36 @@ const TypographyWrapper = styled(Typography)(
     align-items: center;
     justify-content: center;
     color: #F1B030;
- 
+  }
     
-  &.MuiTypography-order__delivered{
-    width: fit-content;
-    display:flex;
-    background: rgba(80, 165, 71, 0.12);
-    padding:5px;
-    border-radius:5px;
-    align-items: center;
-    justify-content: center;
-    color: #50A547;
+  
+  &.MuiTypography-accepted__img{
+    background: #eef7ee;
+    border-radius: 5px;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 20px;
+    letter-spacing: -0.5px;
+    color: #70B569;
+    padding: 4px 12px;
+    position: absolute;
+    right: 5px;
+    top: 5px;
   }
 
+  &.MuiTypography-unaccepted__img{
+    background: #ffc5d4;
+    border-radius: 5px;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 20px;
+    letter-spacing: -0.5px;
+    color: #dd144a;
+    padding: 4px 12px;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+  }
 
 
 `
