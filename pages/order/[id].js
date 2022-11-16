@@ -76,6 +76,7 @@ function Order() {
     const [loading,setLoading] = useState(false)
     const [paymentBtns,setPaymentBtns] = useState(true)
     const [refresh, setRefresh] = useState(false);
+    const [faq,setFaq] = useState("")
 
     useEffect(()=> {
        if(router.isReady){
@@ -173,7 +174,7 @@ function Order() {
                 `orders/cost/${router.query.id}`, 
                 {
                     cost,
-                    text:""
+                    text:faq
                 },
               {  
                 
@@ -191,7 +192,7 @@ function Order() {
               handleClose()
               setCost()
         }
-    
+        setRefresh(true)
     }
 
 
@@ -225,6 +226,16 @@ function Order() {
                             type={"number"}
                             value={cost}
                             onChange={(e)=> setCost(e.target.value)}
+                        />
+                        <TextField
+                            label="Fikringiz"
+                            id="outlined-size-small"
+                            defaultValue=""
+                            size="small"
+                            width="100%"
+                            type={"text"}
+                            value={faq}
+                            onChange={(e)=> setFaq(e.target.value)}
                         />
                         <Button type='submit' className='btn' sx={{width:"100%",background:"#01605a",borderRadius: "10px",marginBottom:"8px",padding:"13px 0",color:"#fff"}}>O’zgarishlarni saqlash</Button>
                         <Button onClick={handleClose}  sx={{width:"100%",background:"rgba(23, 26, 35, 0.06);",borderRadius: "10px",padding:"13px 0",color:"#000"}}>Bekor qilish</Button>
