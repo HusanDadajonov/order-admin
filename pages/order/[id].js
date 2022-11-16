@@ -368,10 +368,9 @@ function Order() {
                             
                             
                         </Box>
-                        <Box sx={{display:"flex",flexDirection:"column"}}>
+                        <Box sx={{display:"flex",flexDirection:"column",overflowY:"scroll",height:"340px"}}>
                             {
                                 order?.transactions.map(item => (
-                                    order?.payment_image_id ?
                                     <Box sx={{position:"relative"}} key={item.id}>
                                         {
                                             item.valid ?  <SimpleTypography variant="span" className="accepted__img" text="Muvaffaqiyatli" /> : null
@@ -384,11 +383,13 @@ function Order() {
                                         
                                         <Image alt='payment' src={`http://137.184.3.22:3000/uploads/files/${item?.image_id}`} width={279} style={{objectFit:"cover"}} height={260}/>
                                     </Box>
-                                : <Image src={"/img/no-image.png"} width={279} style={{objectFit:"cover"}} height={300} alt="default-img"/>
-                                    
                                 ))
                                 
                             }
+                            {
+                                order.payment_image_id === null ?  <Image src={"/img/no-image.png"} width={279} style={{objectFit:"cover"}} height={300} alt="default-img"/> : null
+                            }
+                           
 
                             {
                                 order?.transactions.map(item => (
