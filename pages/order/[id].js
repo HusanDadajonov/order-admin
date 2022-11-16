@@ -237,7 +237,7 @@ function Order() {
                             value={faq}
                             onChange={(e)=> setFaq(e.target.value)}
                         />
-                        <Button type='submit' className='btn' sx={{width:"100%",background:"#01605a",borderRadius: "10px",marginBottom:"8px",padding:"13px 0",color:"#fff"}}>O’zgarishlarni saqlash</Button>
+                        <Button type='submit' sx={{"&:hover":{background:"#0e948c"},width:"100%",background:"#01605a",borderRadius: "10px",marginBottom:"8px",padding:"13px 0",color:"#fff"}}>O’zgarishlarni saqlash</Button>
                         <Button onClick={handleClose}  sx={{width:"100%",background:"rgba(23, 26, 35, 0.06);",borderRadius: "10px",padding:"13px 0",color:"#000"}}>Bekor qilish</Button>
                     </Box>
 
