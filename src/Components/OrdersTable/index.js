@@ -96,20 +96,32 @@ function OrdersTable() {
 
     const TabsData = [
         {
+            id:6,
+            text:"HAMMASI",
+        },
+        {
             id:1,
-            text:"Barcha",
+            text:"YANGI",
+        },
+        {
+            id:0,
+            text:"BEKOR_QILINGAN",
         },
         {
             id:2,
-            text:"Tasdiqlanmagan",
-        },
-        {
-            id:3,
-            text:"Tayyorlanmoqda",
+            text:"TO'LOVDA",
         },
         {
             id:4,
-            text:"Yetkazilgan",
+            text:"YO'LDA (TO'LANDI)",
+        },
+        {
+            id:5,
+            text:"YETQAZILGAN",
+        },
+        {
+            id:3,
+            text:"TEKSHRILMOQDA",
         },
     ]
 
@@ -121,6 +133,38 @@ function OrdersTable() {
         console.log(id);
         route.push(
             `/order/${id}`)
+    }
+
+    function StatusSort(status) {
+        // /orders
+        if(status !== 6){
+            instance.get(
+                `orders?status=${status}`,{headers: {
+                    'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0Z2lkIjpudWxsLCJpZCI6MSwicm9sZSI6MiwiaWF0IjoxNjY4MjUyNTU1fQ.KOXs06thZAisjqPr1ICoJTHNQL4WzXgD2M59V-LJ3JI"
+                }}
+            )
+            .then(function(response) {
+                setOrders(response)
+                setLoading(true)
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+        }
+        else{
+            instance.get(
+                `orders`,{headers: {
+                    'Authorization': 'Bearer ' + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0Z2lkIjpudWxsLCJpZCI6MSwicm9sZSI6MiwiaWF0IjoxNjY4MjUyNTU1fQ.KOXs06thZAisjqPr1ICoJTHNQL4WzXgD2M59V-LJ3JI"
+                  }}
+              )
+              .then(function(response) {
+                setOrders(response)
+                setLoading(true)
+              })
+              .catch(function(error) {
+                console.log(error);
+              });
+        }
     }
 
     if(loading){
@@ -136,7 +180,7 @@ function OrdersTable() {
                         }} value={value} onChange={handleChange} aria-label="basic tabs example">
                             {
                                 TabsData.map(item => (
-                                    <Tab sx={{padding:"21px 32px"}}  key={item.id} label={<SimpleTypegraphy text={item.text} variant="span" className="tab__text" />} {...a11yProps(item.id)} />
+                                    <Tab onClick={()=> StatusSort(item.id)} sx={{padding:"21px 32px"}}  key={item.id} label={<SimpleTypegraphy text={item.text} variant="span" className="tab__text" />} {...a11yProps(item.id)} />
                                 ))
                             }
                             
@@ -147,13 +191,13 @@ function OrdersTable() {
                             noValidate
                             autoComplete="off"
                         >
-                            <TextField
+                            {/* <TextField
                                 sx={{width:"300px"}}
                                 label="ID/Xaridor bo’yicha qidiring..."
                                 id="outlined-size-small"
                                 size="small"
                                 
-                            />
+                            /> */}
                         </Box>
                     </Box>
                     <TableContainer sx={{boxShadow:" 0px 4px 4px rgba(0, 0, 0, 0.03)",padding:"24px 34px"}} component={Paper}>
