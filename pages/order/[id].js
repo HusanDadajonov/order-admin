@@ -77,7 +77,8 @@ function Order() {
     const [paymentBtns,setPaymentBtns] = useState(true)
     const [refresh, setRefresh] = useState(false);
     const [faq,setFaq] = useState("")
-
+    const [paymentComment,setPaymentComment] = useState("")
+    console.log(paymentComment);
     useEffect(()=> {
        if(router.isReady){
         instance.get(
@@ -132,7 +133,8 @@ function Order() {
             instance.put(
                 `/orders/verification/${router.query.id}`, 
                 {
-                    is_paid: bool 
+                    is_paid: bool,
+                    text:paymentComment
                 },
               {  
                 
@@ -389,9 +391,6 @@ function Order() {
                                         {
                                             item.valid === false ?   <SimpleTypography variant="span" className="unaccepted__img" text="Muammoli" /> : null
                                         }
-                                            
-                                           
-                                        
                                         <Image alt='payment' src={`http://137.184.3.22:3000/uploads/files/${item?.image_id}`} width={279} style={{objectFit:"cover"}} height={260}/>
                                     </Box>
                                 ))
@@ -405,9 +404,20 @@ function Order() {
                             {
                                 order?.transactions.map(item => (
                                     item.valid === null ?( 
-                                    <Box key={item.id} sx={{display:"flex",margin:"24px 0",alignItems:"center",justifyContent:"space-between"}}>
-                                        <Button onClick={()=> {checkPayment(true); setRefresh(!refresh)}}  sx={{"&:hover":{background:"#b9d6f2"},width:"90%",marginRight:"10px",background:"#a2D2ff",borderRadius: "10px",padding:"13px 0",color:"#0053A0"}}>Tasdiqlash</Button>
-                                        <Button onClick={()=> {checkPayment(false); setRefresh(!refresh)}} sx={{"&:hover":{background:"rgb(243 131 161 / 12%)"},width:"90%",background:"rgba(238, 36, 90, 0.12)",borderRadius: "10px",padding:"13px 0",color:"#dd144a"}}>Xatolik</Button>
+                                    <Box key={item.id} sx={{margin:"24px 0",justifyContent:"space-between"}}>
+                                        <TextField
+                                            label="Izoh"
+                                            id="outlined-size-small"
+                                            defaultValue=""
+                                            size="small"
+                                            sx={{marginBottom:"10px",width:"100%"}}
+                                            onChange={(e)=> setPaymentComment(e.target.value)}
+                                        />
+                                        <Box sx={{display:"flex",alignItems:"center"}}>
+                                            <Button onClick={()=> {checkPayment(true); setRefresh(!refresh)}}  sx={{"&:hover":{background:"#b9d6f2"},width:"90%",marginRight:"10px",background:"#a2D2ff",borderRadius: "10px",padding:"13px 0",color:"#0053A0"}}>Tasdiqlash</Button>
+                                            <Button onClick={()=> {checkPayment(false); setRefresh(!refresh)}} sx={{"&:hover":{background:"rgb(243 131 161 / 12%)"},width:"90%",background:"rgba(238, 36, 90, 0.12)",borderRadius: "10px",padding:"13px 0",color:"#dd144a"}}>Xatolik</Button>
+                                        </Box>
+                                        
                                     </Box> ) : null
                                 ))
                                 
