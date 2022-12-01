@@ -21,7 +21,6 @@ export default function Home() {
       <main>
         
         <Box sx={{paddingLeft:"150px",paddingTop:"40px",paddingRight:"48px"}}>
-            
             <Table/>
         </Box>
       </main>

@@ -273,7 +273,6 @@ function Order() {
                     <Box sx={{width:"25%",marginRight:"16px",padding:"20px",marginBottom:"16px",background: "#fff",boxShadow:" 0px 2px 2px rgba(0, 0, 0, 0.04)",borderRadius: "8px"}}>
                         <Box>
                             <SimpleTypegraphy text={`Status`} variant={"p"} className="user__sub--title"/>
-                            
                             {
                                 order?.status === 1 ?  <SimpleTypegraphy className="order__new" variant={"span"} text={`YANGI`} /> : null
                             }
@@ -442,7 +441,7 @@ function Order() {
     else{
       return(
         <Box sx={{ display: 'flex',alignItems:"center",justifyContent:"center",height:"93vh" }}>
-            <CircularProgress  sx={{width:"150px !important",height:"150px !important"}} />
+            <CircularProgress   />
         </Box>
       )
     }

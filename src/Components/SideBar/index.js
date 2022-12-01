@@ -2,6 +2,7 @@ import { Box } from '@mui/material'
 import GroupsIcon from '@mui/icons-material/Groups';
 import FilterFramesOutlinedIcon from '@mui/icons-material/FilterFramesOutlined';
 import { useEffect, useState } from 'react';
+import PermMediaIcon from '@mui/icons-material/PermMedia';
 import {
     styled
   } from '@mui/material';
@@ -36,12 +37,19 @@ function SideBar() {
     const [active,setActive] = useState(1)
 
     useEffect(()=>{
-        if(window.location.pathname === "/users"){
-            setActive(2)
-        }
         if(window.location.pathname === "/"){
             setActive(1)
         }
+        if(window.location.pathname === "/banners"){
+            console.log(window.location.pathname);
+            setActive(3)
+        }
+     
+        if(window.location.pathname === "/users"){
+            console.log(window.location.pathname);
+            setActive(2)
+        }
+   
 
         console.log();
     },[])
@@ -95,6 +103,19 @@ function SideBar() {
                     </a>
                 </Link>
               
+                <Link href="/banners" legacyBehavior>
+                    <a >
+
+                        <Box 
+                            sx={siderBarItemStyle}
+                            className={active === 3 ? "active" : ""}
+                            onClick={()=> setActive(3)}
+                        >   
+                            <PermMediaIcon  style={{fontSize:"40px",color:"#171A23"}}/>
+                        </Box>
+                        
+                    </a>
+                </Link>
                
             </Box>
             <Box sx={{width:"40px",height:"40px",borderRadius:"50%",overflow:"hidden"}}>

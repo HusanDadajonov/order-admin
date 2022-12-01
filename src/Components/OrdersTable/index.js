@@ -263,7 +263,7 @@ function OrdersTable() {
     else{
         return(
             <Box sx={{ display: 'flex',alignItems:"center",justifyContent:"center",height:"93vh" }}>
-                <CircularProgress  sx={{width:"150px !important",height:"150px !important"}} />
+                <CircularProgress  />
             </Box>
         )
        
